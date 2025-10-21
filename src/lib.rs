@@ -15,14 +15,35 @@ fn parse_query_string(qs: &[u8], separator: char) -> PyResult<Vec<(String, Strin
 // parse query string into a python object.
 #[pyfunction]
 #[pyo3(signature = (qs, parse_numbers=true),text_signature = "(qs, parse_numbers=true)")]
-fn parse_url_encoded_dict(py: Python, qs: &[u8], parse_numbers: bool) -> PyResult<PyObject> {
-    Ok(pythonize(py, &parse_query_string_to_json(qs, parse_numbers)).unwrap())
+fn parse_url_encoded_dict(py: Python, qs: &[u8], parse_numbers: bool) -> PyResult<Py<PyAny>> {
+    Ok(
+        pythonize(py, &parse_query_string_to_json(qs, parse_numbers))
+            .unwrap()
+            .into(),
+    )
 }
 
 #[pymodule]
-fn fast_query_parsers(_py: Python<'_>, m: &PyModule) -> PyResult<()> {
-    m.add_function(wrap_pyfunction!(parse_query_string, m)?)?;
-    m.add_function(wrap_pyfunction!(parse_url_encoded_dict, m)?)?;
+mod fast_query_parsers {
+    use super::*;
+    #[pyfunction]
+    #[pyo3(name = "parse_query_string")]
+    fn parse_query_string_py(
+        py: Python,
+        qs: &[u8],
+        separator: char,
+    ) -> PyResult<Py<PyAny>> {
+        let result = parse_query_string(qs, separator)?;
+        Ok(pythonize(py, &result).unwrap().into())
+    }
 
-    Ok(())
+    #[pyfunction]
+    #[pyo3(name = "parse_url_encoded_dict",signature = (qs, parse_numbers=true),text_signature = "(qs, parse_numbers=true)")]
+    fn parse_url_encoded_dict_py(
+        py: Python,
+        qs: &[u8],
+        parse_numbers: bool,
+    ) -> PyResult<Py<PyAny>> {
+        parse_url_encoded_dict(py, qs, parse_numbers)
+    }
 }

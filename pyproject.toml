@@ -14,6 +14,7 @@ packages = [{include = "src"}]
 
 [project]
 name = "fast-query-parsers"
+version = "1.0.3"
 requires-python = ">=3.8"
 classifiers = [
     "Development Status :: 5 - Production/Stable",
@@ -47,6 +48,9 @@ keywords = [
     "starlite",
     "litestar",
     "parser",
+]
+dependencies = [
+    "pytest>=8.3.5",
 ]
 
 [tool.poetry.dependencies]
@@ -100,7 +104,6 @@ select = [
     "SIM", # flake8-simplify
     "T10", # flake8-debugger
     "T20", # flake8-print
-    "TCH", # flake8-type-checking
     "TID", # flake8-tidy-imports
     "UP", # pyupgrade
     "W", # pycodestyle - warning

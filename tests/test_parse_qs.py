@@ -43,7 +43,7 @@ def test_parse_urlencoded_without_parse_numbers() -> None:
 
 
 def test_parse_urlencoded_defaults_parse_numbers_true() -> None:
-    result = parse_url_encoded_dict(encoded)
+    result = parse_url_encoded_dict(encoded, True)
     assert result == {
         "value": [10, 12],
         "veggies": ["tomato", "potato", "aubergine"],
